@@ -2,32 +2,32 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { RecruitImportProcessor } from './recruit-import.processor';
 import { ConfigModule } from '@nestjs/config';
-import { CustomRedisModule } from './redis/redis.module';
 import { BullModule } from '@nestjs/bull';
 import { ConfigService } from '@nestjs/config';
+import { AppService } from './app.service';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
-    CustomRedisModule,
+    ConfigModule.forRoot({ isGlobal: true }),
     BullModule.registerQueueAsync({
-      name: 'recrutImport',
+      name: 'recruitImport',
       useFactory: async (configService: ConfigService) => {
         const redisConfig = configService.get('redis');
         return {
           connection: {
-            host: redisConfig.uri,
+            host: redisConfig,
             port: 6379,
-            db: redisConfig.db,
+            db: redisConfig,
           },
-          concurrency: redisConfig.concurrency,
+          defaultJobOptions: {},
+          concurrency: redisConfig,
         };
       },
       inject: [ConfigService],
     }),
   ],
   controllers: [AppController],
-  providers: [RecruitImportProcessor],
+  providers: [RecruitImportProcessor, AppService],
 
 })
 export class AppModule { }
