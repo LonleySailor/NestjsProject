@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { RecruitImportProcessor } from './recruit-import.processor';
 import { ConfigModule } from '@nestjs/config';
-import { BullModule } from '@nestjs/bull';
+import { BullModule } from '@nestjs/bullmq';
 import { ConfigService } from '@nestjs/config';
-import { AppService } from './app.service';
+import { MongooseModule } from '@nestjs/mongoose';
+
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { AppService } from './app.service';
     }),
   ],
   controllers: [AppController],
-  providers: [RecruitImportProcessor, AppService],
+  providers: [RecruitImportProcessor],
 
 })
 export class AppModule { }
