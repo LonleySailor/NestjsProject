@@ -6,9 +6,9 @@ import { BullModule } from '@nestjs/bullmq';
 import { ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
-
 @Module({
   imports: [
+    MongooseModule.forRoot('mongodb://localhost/nest'),
     ConfigModule.forRoot({ isGlobal: true }),
     BullModule.registerQueueAsync({
       name: 'recruitImport',
@@ -32,3 +32,4 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 })
 export class AppModule { }
+
