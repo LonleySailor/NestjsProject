@@ -5,11 +5,12 @@ import { recruitModel } from './schemas/recruit.schema';
 
 @Injectable()
 export class RecruitService {
-    constructor(@InjectModel('Recruit') private readonly recruitModel: Model<recruitModel>) { }
+    constructor(@InjectModel('Recruit') private readonly RecruitModel: Model<recruitModel>) { }
 
 
     async addRecruit(data: Partial<recruitModel>): Promise<recruitModel> {
-        return this.recruitModel.save(data);
+        const newRecruit = new this.RecruitModel(data);
+        return newRecruit.save();
     }
 
 }
