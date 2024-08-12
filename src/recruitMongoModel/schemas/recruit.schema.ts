@@ -9,6 +9,9 @@ export class recruitModel {
     email: string;
     @Prop()
     age: number;
+    @Prop({ type: Date })
+    createdAt?: Date;
+
 }
 
 export const recruitSchema = SchemaFactory.createForClass(recruitModel);

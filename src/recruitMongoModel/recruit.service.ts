@@ -9,7 +9,10 @@ export class RecruitService {
 
 
     async addRecruit(data: Partial<recruitModel>): Promise<recruitModel> {
+
         const newRecruit = new this.RecruitModel(data);
+        newRecruit.createdAt = new Date();
+        console.log(`Recruit added at: ${data.createdAt}`);
         return newRecruit.save();
     }
 
