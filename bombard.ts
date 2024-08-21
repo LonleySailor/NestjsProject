@@ -6,7 +6,7 @@ const pMap = require('p-map');
 const start = async () => {
     console.time("recriut")
     const recriuts = [];
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 1000000; i++) {
 
         recriuts.push({
             "name": faker.person.fullName(),
