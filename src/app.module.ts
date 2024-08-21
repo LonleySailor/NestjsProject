@@ -1,33 +1,22 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { RecruitImportProcessor } from './recruit-import.processor';
 import { ConfigModule } from '@nestjs/config';
-import { CustomRedisModule } from './redis/redis.module';
-import { BullModule } from '@nestjs/bull';
-import { ConfigService } from '@nestjs/config';
-
+import { MongooseModule } from '@nestjs/mongoose';
+import { RecruitsModule } from './recruitMongoModel/recruits.module';
+import { BullBoardModule } from "@bull-board/nestjs";
+import { ExpressAdapter } from "@bull-board/express";
 @Module({
   imports: [
-    ConfigModule.forRoot(),
-    CustomRedisModule,
-    BullModule.registerQueueAsync({
-      name: 'recrutImport',
-      useFactory: async (configService: ConfigService) => {
-        const redisConfig = configService.get('redis');
-        return {
-          connection: {
-            host: redisConfig.uri,
-            port: 6379,
-            db: redisConfig.db,
-          },
-          concurrency: redisConfig.concurrency,
-        };
-      },
-      inject: [ConfigService],
+    MongooseModule.forRoot('mongodb://localhost/nest'),
+    ConfigModule.forRoot({ isGlobal: true }),
+    BullBoardModule.forRoot({
+      route: '/queues',
+      adapter: ExpressAdapter // Or FastifyAdapter from `@bull-board/fastify`
     }),
+    RecruitsModule,
   ],
-  controllers: [AppController],
-  providers: [RecruitImportProcessor],
+  controllers: [],
+  providers: [],
 
 })
 export class AppModule { }
+

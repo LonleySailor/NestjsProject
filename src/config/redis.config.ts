@@ -1,7 +1,6 @@
 import 'dotenv/config';
 import { plainToClass } from 'class-transformer';
 import { validateSync } from 'class-validator';
-import { registerAs } from '@nestjs/config';
 import { RedisConfig } from './redis-config.validation';
 import { ConfigService } from '@nestjs/config';
 
