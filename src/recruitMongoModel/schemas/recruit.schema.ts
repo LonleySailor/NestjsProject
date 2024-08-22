@@ -1,8 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 export type recruitDocument = HydratedDocument<recruitModel>;
 @Schema()
 export class recruitModel {
+    @Prop({ type: Types.ObjectId })
+    _id: Types.ObjectId;
     @Prop()
     name: string;
     @Prop()

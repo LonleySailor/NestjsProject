@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { recruitModel } from './schemas/recruit.schema';
 import { Interval } from '@nestjs/schedule';
 
@@ -30,6 +30,9 @@ export class RecruitService {
         await this.RecruitModel.insertMany([...this.recruitsToAdd].map((recruit: recruitModel) => ({ ...recruit, createdAt: new Date() })));
         console.log(`Recruits added at: ${new Date()}`)
         this.recruitsToAdd.clear();
+    }
+    async findOneById(id: Types.ObjectId): Promise<recruitModel> {
+        return this.RecruitModel.findById(id).exec();
     }
 
 }
