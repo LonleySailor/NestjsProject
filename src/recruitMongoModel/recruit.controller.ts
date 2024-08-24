@@ -24,6 +24,10 @@ export class RecruitController {
     async getRecruitById(@Param('id') id: Types.ObjectId): Promise<recruitModel> {
         return this.recruitService.findOneById(id);
     }
+    @Get('/recruits/:page')
+    async getRecruits(@Param('page') page: number): Promise<any> {
+        return this.recruitService.getRecruits(page);
+    }
 
 }
 
