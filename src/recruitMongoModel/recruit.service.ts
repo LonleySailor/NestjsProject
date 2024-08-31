@@ -35,4 +35,16 @@ export class RecruitService {
         return this.RecruitModel.findById(id).exec();
     }
 
+
+    async getRecruits(page: number): Promise<any> {
+        const limit = 50;
+        const skip = (page - 1) * limit;
+        const recruits = await this.RecruitModel.find()
+            .sort({ _id: 1 })
+            .skip(skip)
+            .limit(limit)
+            .exec();
+        return recruits;
+    }
 }
+
