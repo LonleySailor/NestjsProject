@@ -10,10 +10,9 @@ export class RecruitService {
     constructor(@InjectModel('Recruit') private readonly RecruitModel: Model<recruitModel>) { }
 
 
-    async addRecruit(data: Partial<recruitModel>): Promise<recruitModel> {
+    async addtheRecruit(data: Partial<recruitModel>): Promise<recruitModel> {
 
         const newRecruit = new this.RecruitModel(data);
-        newRecruit.createdAt = new Date();
         console.log(`Recruit added at: ${newRecruit.createdAt}`);
         return newRecruit.save();
     }
@@ -27,7 +26,7 @@ export class RecruitService {
 
         console.log(`Recruits to add: ${this.recruitsToAdd.size}`)
 
-        await this.RecruitModel.insertMany([...this.recruitsToAdd].map((recruit: recruitModel) => ({ ...recruit, createdAt: new Date() })));
+        await this.RecruitModel.insertMany([...this.recruitsToAdd]);
         console.log(`Recruits added at: ${new Date()}`)
         this.recruitsToAdd.clear();
     }
@@ -46,5 +45,16 @@ export class RecruitService {
             .exec();
         return recruits;
     }
+    async getRecruitsByName(name: string, page: number): Promise<any> {
+        const limit = 50;
+        const skip = (page - 1) * limit;
+        const recruits = await this.RecruitModel.find({ name: { $regex: name, $options: 'i' } })
+            .sort({ name: 1 })
+            .skip(skip)
+            .limit(limit)
+            .exec();
+        return recruits;
+    }
 }
+
 

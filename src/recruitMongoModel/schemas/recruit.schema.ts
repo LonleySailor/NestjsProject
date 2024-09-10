@@ -3,7 +3,7 @@ import { HydratedDocument, Types } from 'mongoose';
 export type recruitDocument = HydratedDocument<recruitModel>;
 @Schema()
 export class recruitModel {
-    @Prop({ type: Types.ObjectId })
+    @Prop({ type: Types.ObjectId, default: () => new Types.ObjectId() })
     _id: Types.ObjectId;
     @Prop()
     name: string;
@@ -11,7 +11,7 @@ export class recruitModel {
     email: string;
     @Prop()
     age: number;
-    @Prop({ type: Date })
+    @Prop({ type: Date, default: () => new Date() })
     createdAt?: Date;
 
 }

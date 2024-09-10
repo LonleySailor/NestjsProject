@@ -18,16 +18,21 @@ export class RecruitController {
     @Post('/addRecruits')
     async addRecruit(@Body() recruitData: Partial<recruitModel>): Promise<recruitModel> {
         console.log(recruitData)
-        return this.recruitService.addRecruit(recruitData);
+
+        return this.recruitService.addtheRecruit(recruitData);
     }
     @Get('/getRecruitById/:id')
     async getRecruitById(@Param('id') id: Types.ObjectId): Promise<recruitModel> {
+        console.log("hi")
         return this.recruitService.findOneById(id);
     }
     @Get('/recruits/:page')
     async getRecruits(@Param('page') page: number): Promise<any> {
         return this.recruitService.getRecruits(page);
     }
-
+    @Get('/recruitsByName/:name/:page')
+    async getRecruitsByName(@Param('name') name: string, @Param('page') page: number): Promise<any> {
+        return this.recruitService.getRecruitsByName(name, page);
+    }
 }
 

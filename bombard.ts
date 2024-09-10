@@ -10,7 +10,7 @@ const start = async () => {
     const recruits = [];
     const ids = [];  // Array to store the generated IDs
 
-    for (let i = 0; i < 1000000; i++) {
+    for (let i = 0; i < 100000; i++) {
         const _id = new Types.ObjectId();  // Generate a new ObjectId
 
         recruits.push({
@@ -28,7 +28,7 @@ const start = async () => {
 
     await pMap(recruits, async (recruit) => {
         try {
-            await axios.post('http://localhost:4000/addRecruitstoqueue', recruit);
+            await axios.post('http://localhost:4000/addRecruits', recruit);
         } catch (error) {
             console.log(error);
         }
