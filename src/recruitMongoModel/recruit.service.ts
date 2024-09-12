@@ -30,6 +30,7 @@ export class RecruitService {
         console.log(`Recruits added at: ${new Date()}`)
         this.recruitsToAdd.clear();
     }
+    
     async findOneById(id: Types.ObjectId): Promise<recruitModel | null> {
           return await this.RecruitModel.findById(id).exec();
         
