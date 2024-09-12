@@ -30,11 +30,10 @@ export class RecruitService {
         console.log(`Recruits added at: ${new Date()}`)
         this.recruitsToAdd.clear();
     }
-    async findOneById(id: Types.ObjectId): Promise<recruitModel> {
-        return this.RecruitModel.findById(id).exec();
-    }
-
-
+    async findOneById(id: Types.ObjectId): Promise<recruitModel | null> {
+          return await this.RecruitModel.findById(id).exec();
+        
+      }
     async getRecruits(page: number): Promise<any> {
         const limit = 50;
         const skip = (page - 1) * limit;

@@ -22,10 +22,11 @@ export class RecruitController {
         return this.recruitService.addtheRecruit(recruitData);
     }
     @Get('/getRecruitById/:id')
-    async getRecruitById(@Param('id') id: Types.ObjectId): Promise<recruitModel> {
-        console.log("hi")
-        return this.recruitService.findOneById(id);
-    }
+    async getRecruitById(@Param('id') id: string): Promise<recruitModel | null> {
+          const objectId = new Types.ObjectId(id);
+          const recruit = await this.recruitService.findOneById(objectId);
+          return recruit;  
+      }
     @Get('/recruits/:page')
     async getRecruits(@Param('page') page: number): Promise<any> {
         return this.recruitService.getRecruits(page);
