@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { test, expect, request } from '@playwright/test';
 
-test(' should check if server rejects duplicate recruits', async ({ request }) => {
+test(' should to create a recruit and retreive it', async ({ request }) => {
     // Send a GET request
     const testData = {
         "name": faker.person.fullName(),
@@ -15,17 +15,14 @@ test(' should check if server rejects duplicate recruits', async ({ request }) =
     });
     expect(postResponse.status()).toBe(201);
     const responseData = await postResponse.json();
-    
-//Send a Get request to get the recruit by ID
-    const getResponse = await request.get(`http://localhost:4000/getRecruitById/${responseData._id}`);
-    expect(getResponse.status()).toBe(200);
+   //Check if the model will reject the same recruit so no duplicates occur
+    const postResponse2 = await request.post('http://localhost:4000/addRecruits', {
+        data: testData, headers: { 'Content-Type': 'application/json' }
+    });
+    expect(postResponse2.status()).toBe(400);
+    const responseData2 = await postResponse2.json();
+    expect (responseData2.message).toBe('Recruit already exists. Please check the details.');
 
-  
+
     
-   //Check the respose body
-   const responseBody = await getResponse.json();
-   console.log(responseBody);
-   expect(responseBody.name).toBe(testData.name);
-   expect(responseBody.email).toBe(testData.email);
-   expect(responseBody.age).toBe(testData.age);
 });

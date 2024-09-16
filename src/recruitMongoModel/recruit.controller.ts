@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, HttpException, HttpStatus } from '@nestjs/common';
 import { RecruitService } from './recruit.service';
 import { recruitModel } from './schemas/recruit.schema';
 import { InjectQueue } from '@nestjs/bullmq';
@@ -17,10 +17,27 @@ export class RecruitController {
 
     @Post('/addRecruits')
     async addRecruit(@Body() recruitData: Partial<recruitModel>): Promise<recruitModel> {
-        console.log(recruitData)
-
-        return this.recruitService.addtheRecruit(recruitData);
+      try {
+        console.log(recruitData);
+  
+        // Attempt to add the recruit
+        return await this.recruitService.addtheRecruit(recruitData);
+      } catch (error) {
+        // Handle specific MongoDB errors
+        if (error.code === 11000) { // Duplicate key error code
+          throw new HttpException('Recruit already exists. Please check the details.', HttpStatus.BAD_REQUEST);
+        }
+        else if (error.name === 'ValidationError') {
+          const validationError = error.errors;
+          const errorMessage = Object.keys(validationError).map(key => validationError[key].message).join(', ');
+          throw new HttpException(`Validation failed. ${errorMessage}`, HttpStatus.BAD_REQUEST);
+        }
+        
+        // Handle other unexpected errors
+        throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR);
+      }
     }
+  
 
     @Get('/getRecruitById/:id')
     async getRecruitById(@Param('id') id: string): Promise<recruitModel | null> {
