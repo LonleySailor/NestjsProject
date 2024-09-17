@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Body, Injectable, Param } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import mongoose, { Model, Types } from 'mongoose';
 import { recruitModel } from './schemas/recruit.schema';
 import { Interval } from '@nestjs/schedule';
 
@@ -55,6 +55,44 @@ export class RecruitService {
             .exec();
         return recruits;
     }
+    async edittheRecruit(id: string, recruitData: Partial<recruitModel>): Promise<recruitModel> {
+        console.log("Before session");
+        const session = await mongoose.startSession();
+        console.log("Before transaction");
+        session.startTransaction();
+        console.log("In service1")
+    
+        try {
+            console.log('"In service2"');
+            // Check if the recruit exists
+            const recruit = await this.RecruitModel.findById(id).session(session);
+    
+            if (!recruit) {
+                throw new Error('Recruit not found');
+            }
+    
+            // Perform the update within the transaction
+            const updatedRecruit = await this.RecruitModel.findByIdAndUpdate(
+                id,
+                { $set: recruitData },
+                { new: true, session, runValidators: true } // Ensure schema validation is applied here
+            );
+    
+            // Commit the transaction
+            await session.commitTransaction();
+            return updatedRecruit;
+        } catch (error) {
+            await session.abortTransaction();
+    
+            // Propagate errors to the controller
+            if (error.name === 'ValidationError') {
+                throw error; // Validation errors will be caught by the controller
+            }
+            throw new Error(error.message || 'Unknown error occurred while editing the recruit');
+        } finally {
+            session.endSession();
+        }
+    }
+    
 }
-
-
+ 
