@@ -1,6 +1,6 @@
 import { Body, Injectable, Param } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model, Types } from 'mongoose';
+import mongoose, {  Model, Types } from 'mongoose';
 import { recruitModel } from './schemas/recruit.schema';
 import { Interval } from '@nestjs/schedule';
 
@@ -55,28 +55,33 @@ export class RecruitService {
             .exec();
         return recruits;
     }
-    async edittheRecruit(id: string, recruitData: Partial<recruitModel>): Promise<recruitModel> {
-        console.log("Before session");
+    async editTheRecruit(id: Types.ObjectId, recruitData: Partial<recruitModel>): Promise<recruitModel> {
+        console.log("inside editTheRecruit");
+       // let session: ClientSession;
+       
         const session = await mongoose.startSession();
-        console.log("Before transaction");
+       console.log("before creating transaction");
         session.startTransaction();
-        console.log("In service1")
+        console.log("before finding");
     
         try {
-            console.log('"In service2"');
             // Check if the recruit exists
-            const recruit = await this.RecruitModel.findById(id).session(session);
+            const recruit = await this.RecruitModel.findOne({ _id: id }).session(session);
+            console.log("after finding");
     
             if (!recruit) {
                 throw new Error('Recruit not found');
             }
     
+            console.log("before updating");
+    
             // Perform the update within the transaction
             const updatedRecruit = await this.RecruitModel.findByIdAndUpdate(
                 id,
                 { $set: recruitData },
-                { new: true, session, runValidators: true } // Ensure schema validation is applied here
+                { new: true, runValidators: true, session } // Ensure schema validation is applied here
             );
+            console.log("after updating");
     
             // Commit the transaction
             await session.commitTransaction();
@@ -84,15 +89,18 @@ export class RecruitService {
         } catch (error) {
             await session.abortTransaction();
     
-            // Propagate errors to the controller
+            console.log(error);
+    
             if (error.name === 'ValidationError') {
                 throw error; // Validation errors will be caught by the controller
             }
+    
             throw new Error(error.message || 'Unknown error occurred while editing the recruit');
         } finally {
             session.endSession();
         }
     }
     
+ 
 }
  

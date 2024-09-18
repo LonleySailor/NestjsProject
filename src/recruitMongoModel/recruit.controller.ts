@@ -57,13 +57,13 @@ export class RecruitController {
     @Post('/editRecruits/:ID')
     async editRecruits(@Param('ID') id: string, @Body() recruitData: Partial<recruitModel>): Promise<recruitModel> {
       try {
-        console.log("In controller")
-        // Attempt to edit the recruit
-        return await this.recruitService.edittheRecruit(id, recruitData);
+        const objectId = new Types.ObjectId(id);
+        console.log("before sending")
+        return await this.recruitService.editTheRecruit(objectId, recruitData);
       } catch (error) {
         // Handle specific MongoDB errors
         if (error.code === 11000) { // Duplicate key error code
-          throw new HttpException('Duplicate recruit found. Please check the email.', HttpStatus.BAD_REQUEST);
+          throw new HttpException('Duplicate recruit found. Please check the details.', HttpStatus.BAD_REQUEST);
         }
         else if (error.name === 'ValidationError') {
           const validationError = error.errors;
@@ -75,6 +75,7 @@ export class RecruitController {
         }
         
         // Handle other unexpected errors
+      
         throw new HttpException('Internal server error', HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
