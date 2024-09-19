@@ -55,34 +55,20 @@ export class RecruitService {
             .exec();
         return recruits;
     }
-    async editTheRecruit(id: Types.ObjectId, recruitData: Partial<recruitModel>): Promise<recruitModel> {
-        console.log("inside editTheRecruit");
-       // let session: ClientSession;
-       
-        const session = await mongoose.startSession();
-       console.log("before creating transaction");
+    async editTheRecruit(id: Types.ObjectId, recruitData: Partial<recruitModel>): Promise<recruitModel> {      
+        const session = await this.RecruitModel.startSession();     
         session.startTransaction();
-        console.log("before finding");
-    
         try {
-            // Check if the recruit exists
             const recruit = await this.RecruitModel.findOne({ _id: id }).session(session);
-            console.log("after finding");
-    
             if (!recruit) {
                 throw new Error('Recruit not found');
             }
-    
-            console.log("before updating");
-    
-            // Perform the update within the transaction
+
             const updatedRecruit = await this.RecruitModel.findByIdAndUpdate(
                 id,
                 { $set: recruitData },
                 { new: true, runValidators: true, session } // Ensure schema validation is applied here
-            );
-            console.log("after updating");
-    
+            );   
             // Commit the transaction
             await session.commitTransaction();
             return updatedRecruit;

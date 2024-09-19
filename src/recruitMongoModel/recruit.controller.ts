@@ -58,7 +58,7 @@ export class RecruitController {
     async editRecruits(@Param('ID') id: string, @Body() recruitData: Partial<recruitModel>): Promise<recruitModel> {
       try {
         const objectId = new Types.ObjectId(id);
-        console.log("before sending")
+        
         return await this.recruitService.editTheRecruit(objectId, recruitData);
       } catch (error) {
         // Handle specific MongoDB errors
